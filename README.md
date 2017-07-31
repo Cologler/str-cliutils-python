@@ -1,6 +1,6 @@
 # str.toolkits.cologler
 
-str operate for cmd.
+str operator for command line.
 
 `str.py` handle all input as single text, `mstr.py` handle each line from input as single text.
 
