@@ -21,6 +21,14 @@ def read(self: ISession):
     return self.state['reader']()
 ISession.read = read
 
+LEN = len
+@builder.command
+def len(session: ISession):
+    '''get len of str from source.'''
+    for line in session.read():
+        print(LEN(line))
+len = LEN
+
 @builder.command
 def skip(session: ISession, length: int, from_right=False):
     '''skip number of char from source.'''
