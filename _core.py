@@ -6,6 +6,7 @@
 #
 # ----------
 
+import os
 import sys
 import re
 
@@ -59,7 +60,7 @@ def index_of(session: ISession, value: str):
 
 @builder.command
 def regex(session: ISession, pattern: str, r=None):
-    '''find index of value from source.'''
+    '''replace value from source by regex.'''
     try:
         regex = re.compile(pattern)
     except Exception:
@@ -79,7 +80,9 @@ def regex(session: ISession, pattern: str, r=None):
 
 def execute(argv, reader):
     if sys.stdin.isatty():
-        print('you must call this script use pipe.')
+        script = os.path.splitext(os.path.basename(argv[0]))[0]
+        print('You must call this script use pipe. For example:')
+        print('   dir|%s' % script)
     else:
         builder.build().execute(argv, state={
             'reader': reader
