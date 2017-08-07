@@ -99,7 +99,9 @@ def execute(argv, reader):
     if sys.stdin.isatty():
         script = os.path.splitext(os.path.basename(argv[0]))[0]
         print('You must call this script use pipe. For example:')
-        print('   dir|%s' % script)
+        print('   dir | %s' % script)
+        print()
+        builder.build().execute([])
     else:
         builder.build().execute(argv, state={
             'reader': reader
