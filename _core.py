@@ -58,17 +58,34 @@ def index_of(session: ISession, value: str):
     for line in session.read():
         print(line.find(value))
 
+
+@builder.command
+def split(session: ISession, spliter: str, end: str=None):
+    '''split value by spliter.'''
+    for line in session.read():
+        for x in line.split(spliter):
+            print(x)
+        if end != None:
+            print(end)
+
+
+@builder.command
+def join(session: ISession, spliter: str):
+    '''join value by spliter.'''
+    print(spliter.join(session.read()))
+
+
 @builder.command
 def regex(session: ISession, pattern: str, r=None):
     '''replace value from source by regex.'''
     try:
-        regex = re.compile(pattern)
+        regexp = re.compile(pattern)
     except Exception:
         raise RuntimeException('invalid regex.')
     if r is None:
         r = '{0}'
     for line in session.read():
-        match = regex.search(line)
+        match = regexp.search(line)
         if match is None:
             continue
         gs = [match.group(0)] + list(match.groups())
