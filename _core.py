@@ -53,11 +53,29 @@ def take(session: ISession, length: int, from_right=False):
             print(line[:length])
 
 @builder.command
+def replace(session: ISession, old, new):
+    '''replace from OLD to NEW.'''
+    for line in session.read():
+        print(line.replace(old, new))
+
+@builder.command
+def upper(session: ISession):
+    '''to upper case.'''
+    for line in session.read():
+        print(line.upper())
+
+@builder.command
+def lower(session: ISession):
+    '''to lower case.'''
+    for line in session.read():
+        print(line.lower())
+
+
+@builder.command
 def index_of(session: ISession, value: str):
     '''find index of value from source.'''
     for line in session.read():
         print(line.find(value))
-
 
 @builder.command
 def split(session: ISession, spliter: str, end: str=None):
@@ -68,12 +86,10 @@ def split(session: ISession, spliter: str, end: str=None):
         if end != None:
             print(end)
 
-
 @builder.command
 def join(session: ISession, spliter: str):
     '''join value by spliter.'''
     print(spliter.join(session.read()))
-
 
 @builder.command
 def regex(session: ISession, pattern: str, r=None):
