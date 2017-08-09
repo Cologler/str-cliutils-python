@@ -111,6 +111,42 @@ def regex(session: ISession, pattern: str, r=None):
             raise RuntimeException(str(err))
 
 
+ENCODING_MAP = {
+    'utf16le': 'utf-16le'
+}
+
+OpenCC = None
+
+def cc(session: ISession, mode, encoding):
+    if encoding != None:
+        encoding = ENCODING_MAP.get(encoding, encoding)
+    from opencc import OpenCC
+    instance = OpenCC(mode)
+    for line in session.read():
+        print(instance.convert(line))
+
+
+@builder.command
+def s2t(session: ISession, encoding=None):
+    '''convert from Simplified Chinese to Traditional Chinese'''
+    cc(session, 's2t', encoding)
+
+@builder.command
+def s2tw(session: ISession, encoding=None):
+    '''convert from Simplified Chinese to TaiWan Traditional Chinese'''
+    cc(session, 's2tw', encoding)
+
+@builder.command
+def t2s(session: ISession, encoding=None):
+    '''convert from Simplified Chinese to Traditional Chinese'''
+    cc(session, 't2s', encoding)
+
+@builder.command
+def tw2s(session: ISession, encoding=None):
+    '''convert from Simplified Chinese to TaiWan Traditional Chinese'''
+    cc(session, 'tw2s', encoding)
+
+
 def execute(argv, reader):
     if sys.stdin.isatty():
         script = os.path.splitext(os.path.basename(argv[0]))[0]
