@@ -52,6 +52,31 @@ def take(session: ISession, length: int, from_right=False):
         else:
             print(line[:length])
 
+RANGE = range
+@builder.command
+def range(session: ISession, start: int, end: int):
+    '''same as python str[START:END].'''
+    for line in session.read():
+        val = line[start: end]
+        print(val)
+range = RANGE
+
+@builder.command
+def char(session: ISession, index: int):
+    '''get char by index from source.'''
+    for line in session.read():
+        try:
+            val = line[index]
+        except IndexError:
+            val = ''
+        print(val)
+
+@builder.command
+def index_of(session: ISession, value: str):
+    '''find index of value from source.'''
+    for line in session.read():
+        print(line.find(value))
+
 @builder.command
 def replace(session: ISession, old, new):
     '''replace from OLD to NEW.'''
@@ -70,13 +95,6 @@ def lower(session: ISession):
     for line in session.read():
         print(line.lower())
 
-
-@builder.command
-def index_of(session: ISession, value: str):
-    '''find index of value from source.'''
-    for line in session.read():
-        print(line.find(value))
-
 @builder.command
 def split(session: ISession, spliter: str, end: str=None):
     '''split value by spliter.'''
@@ -85,11 +103,6 @@ def split(session: ISession, spliter: str, end: str=None):
             print(x)
         if end != None:
             print(end)
-
-@builder.command
-def join(session: ISession, spliter: str):
-    '''join value by spliter.'''
-    print(spliter.join(session.read()))
 
 @builder.command
 def regex(session: ISession, pattern: str, r=None):
@@ -110,7 +123,6 @@ def regex(session: ISession, pattern: str, r=None):
         except IndexError as err:
             raise RuntimeException(str(err))
 
-
 ENCODING_MAP = {
     'utf16le': 'utf-16le'
 }
@@ -124,7 +136,6 @@ def cc(session: ISession, mode, encoding):
     instance = OpenCC(mode)
     for line in session.read():
         print(instance.convert(line))
-
 
 @builder.command
 def s2t(session: ISession, encoding=None):

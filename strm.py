@@ -3,13 +3,37 @@
 #
 # Copyright (c) 2016 - cologler <skyoflw@gmail.com>
 # ----------
-# 
+#
 # ----------
 
 import sys
 import traceback
 
-from _core import execute
+from _core import (
+    ISession,
+    builder,
+    execute
+)
+
+@builder.command
+def join(session: ISession, spliter: str):
+    '''join lines by spliter.'''
+    print(spliter.join(session.read()))
+
+@builder.command
+def skip_empty(session: ISession):
+    '''ignore all empty line.'''
+    for line in session.read():
+        if line:
+            print(line)
+
+@builder.command
+def skip_whitespace(session: ISession):
+    '''ignore all whitespace line.'''
+    for line in session.read():
+        if line.strip():
+            print(line)
+
 
 def main(argv=None):
     if argv is None:
