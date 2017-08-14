@@ -123,39 +123,33 @@ def regex(session: ISession, pattern: str, r=None):
         except IndexError as err:
             raise RuntimeException(str(err))
 
-ENCODING_MAP = {
-    'utf16le': 'utf-16le'
-}
-
 OpenCC = None
 
-def cc(session: ISession, mode, encoding):
-    if encoding != None:
-        encoding = ENCODING_MAP.get(encoding, encoding)
+def cc(session: ISession, mode):
     from opencc import OpenCC
     instance = OpenCC(mode)
     for line in session.read():
         print(instance.convert(line))
 
 @builder.command
-def s2t(session: ISession, encoding=None):
+def s2t(session: ISession):
     '''convert from Simplified Chinese to Traditional Chinese'''
-    cc(session, 's2t', encoding)
+    cc(session, 's2t')
 
 @builder.command
-def s2tw(session: ISession, encoding=None):
+def s2tw(session: ISession):
     '''convert from Simplified Chinese to TaiWan Traditional Chinese'''
-    cc(session, 's2tw', encoding)
+    cc(session, 's2tw')
 
 @builder.command
-def t2s(session: ISession, encoding=None):
+def t2s(session: ISession):
     '''convert from Simplified Chinese to Traditional Chinese'''
-    cc(session, 't2s', encoding)
+    cc(session, 't2s')
 
 @builder.command
-def tw2s(session: ISession, encoding=None):
+def tw2s(session: ISession):
     '''convert from Simplified Chinese to TaiWan Traditional Chinese'''
-    cc(session, 'tw2s', encoding)
+    cc(session, 'tw2s')
 
 
 def execute(argv, reader):
