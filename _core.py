@@ -19,7 +19,16 @@ from jasily.cli import (
 builder = EngineBuilder()
 
 def read(self: ISession):
-    return self.state['reader']()
+    if sys.stdin.isatty():
+        print('You must call this script use pipe. For example:')
+        script = os.path.splitext(os.path.basename(sys.argv[0]))[0]
+        print('   dir | %s' % script)
+        print()
+        self.usage()
+        return []
+    else:
+        return self.state['reader']()
+
 ISession.read = read
 
 LEN = len
@@ -159,13 +168,7 @@ def charcode(session: ISession):
 
 
 def execute(argv, reader):
-    if sys.stdin.isatty():
-        script = os.path.splitext(os.path.basename(argv[0]))[0]
-        print('You must call this script use pipe. For example:')
-        print('   dir | %s' % script)
-        print()
-        builder.build().execute([])
-    else:
-        builder.build().execute(argv, state={
-            'reader': reader
-        })
+    builder.build().execute(argv, state={
+        'reader': reader
+    })
+
