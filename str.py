@@ -15,6 +15,11 @@ from _core import (
     execute
 )
 
+@builder.command
+def lines(session: ISession):
+    '''get total lines from stdin.'''
+    print(len(session.read()[0].splitlines()))
+
 def main(argv=None):
     if argv is None:
         argv = sys.argv

@@ -21,6 +21,17 @@ def join(session: ISession, spliter: str):
     print(spliter.join(session.read()))
 
 @builder.command
+def insert_linenumber(session: ISession, format: str='[{}] ', start: int=1):
+    '''insert line number to line begin for each lines.'''
+    lines = session.read()
+    mw = len(str(len(lines) + start - 1))
+    for index, line in enumerate(lines):
+        idxstr = str(index + start - 1)
+        idxstr = idxstr.rjust(mw)
+        print(format.format(idxstr), line)
+
+
+@builder.command
 def skip_empty(session: ISession):
     '''ignore all empty line.'''
     for line in session.read():

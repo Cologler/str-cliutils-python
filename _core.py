@@ -25,14 +25,14 @@ ISession.read = read
 LEN = len
 @builder.command
 def len(session: ISession):
-    '''get len of str from source.'''
+    '''get len of str from stdin.'''
     for line in session.read():
         print(LEN(line))
 len = LEN
 
 @builder.command
 def skip(session: ISession, length: int, from_right=False):
-    '''skip number of char from source.'''
+    '''skip number of char from stdin.'''
     for line in session.read():
         if len(line) <= length:
             print('')
@@ -43,7 +43,7 @@ def skip(session: ISession, length: int, from_right=False):
 
 @builder.command
 def take(session: ISession, length: int, from_right=False):
-    '''take number of char from source.'''
+    '''take number of char from stdin.'''
     for line in session.read():
         if len(line) <= length:
             print(line)
@@ -63,7 +63,7 @@ range = RANGE
 
 @builder.command
 def char(session: ISession, index: int):
-    '''get char by index from source.'''
+    '''get char by index from stdin.'''
     for line in session.read():
         try:
             val = line[index]
@@ -73,7 +73,7 @@ def char(session: ISession, index: int):
 
 @builder.command
 def index_of(session: ISession, value: str):
-    '''find index of value from source.'''
+    '''find index of value from stdin.'''
     for line in session.read():
         print(line.find(value))
 
@@ -106,7 +106,7 @@ def split(session: ISession, spliter: str, end: str=None):
 
 @builder.command
 def regex(session: ISession, pattern: str, r=None):
-    '''replace value from source by regex.'''
+    '''replace value from stdin by regex.'''
     try:
         regexp = re.compile(pattern)
     except Exception:
@@ -150,6 +150,12 @@ def t2s(session: ISession):
 def tw2s(session: ISession):
     '''convert from Simplified Chinese to TaiWan Traditional Chinese'''
     cc(session, 'tw2s')
+
+@builder.command
+def charcode(session: ISession):
+    '''get char code from stdin.'''
+    for line in session.read():
+        print(','.join([str(ord(ch)) for ch in line]))
 
 
 def execute(argv, reader):
