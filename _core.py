@@ -93,6 +93,15 @@ def replace(session: ISession, old, new):
         print(line.replace(old, new))
 
 @builder.command
+def insert(session: ISession, value, index: int=0):
+    '''insert into source.'''
+    for line in session.read():
+        if len(line) <= index:
+            line = line.ljust(index)
+        line = line[:index] + value + line[index:]
+        print(line)
+
+@builder.command
 def upper(session: ISession):
     '''to upper case.'''
     for line in session.read():
