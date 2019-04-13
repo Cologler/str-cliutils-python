@@ -1,1 +1,3 @@
-jasily
+click-anno
+colorama
+opencc-python-reimplemented
