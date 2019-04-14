@@ -8,25 +8,22 @@
 import os
 import sys
 import traceback
-import re
 
 import click
 from click_anno import click_app
 
-RE_SLICE = re.compile('^(\d*):(\d*)(?:(\d*))?$')
-
-def parse_as_slice(range_str: str):
-    match = RE_SLICE.match(range_str)
-    if match:
-        g1, g2, g3 = tuple(int(g) if g else None for g in match.groups())
-        if g1 or g2:
-            return slice(g1, g2, g3)
-    return None
+from .utils import parse_as_slice
 
 
 class BaseApp:
-    def _read(self):
+    def _read_core(self):
         raise NotImplementedError
+
+    def _is_read(self):
+        return not sys.stdin.isatty()
+
+    def _read(self):
+        return [] if sys.stdin.isatty() else self._read_core()
 
 
 class CommonApp(BaseApp):
@@ -141,15 +138,28 @@ class CommonApp(BaseApp):
         for line in self._read():
             click.echo(','.join([str(ord(ch)) for ch in line]))
 
+    def prfmt(self, pattern):
+        '''
+        <POWER!> format input using the PATTERN.
+
+        try: `ping 192.168.1.1 | str each prfmt "[{time}] [{index}] {line}"`
+        '''
+        from .util_prfmt import ContextMapping
+        ctxm = ContextMapping()
+        for index, line in enumerate(self._read()):
+            ctxm.set_index(index)
+            ctxm.set_line(line)
+            click.echo(pattern.format_map(ctxm))
+
 
 class StrApp(CommonApp):
 
-    def _read(self):
+    def _read_core(self):
         return [sys.stdin.read()]
 
     class Each(CommonApp):
         '''work with each line as a standalone str'''
-        def _read(self):
+        def _read_core(self):
             for line in sys.stdin:
                 if line.endswith('\n'):
                     line = line[:-1]
@@ -158,7 +168,7 @@ class StrApp(CommonApp):
     class Line(BaseApp):
         '''work with the lines collection'''
 
-        def _read(self):
+        def _read_core(self):
             return sys.stdin.read().splitlines()
 
         def count(self):
@@ -200,7 +210,6 @@ def main(argv=None):
         argv = sys.argv
     try:
         app = click_app(allow_inherit=True)(StrApp)
-
         if sys.stdin.isatty():
             click.echo(
                 click.style(
@@ -215,9 +224,6 @@ def main(argv=None):
                 )
             )
             click.echo()
-            app(['--help'])
-        else:
-            app()
-
+        app()
     except Exception: # pylint: disable=W0703
         traceback.print_exc()
